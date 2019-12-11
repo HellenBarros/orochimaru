@@ -125,7 +125,7 @@ int main()
   naruto[9] = load_bitmap("pulando.bmp", NULL);
   naruto[10] = load_bitmap("murro_4.bmp", NULL);
 
-  BITMAP* orochimaruataque[14]; //ataque do orochimaru
+  BITMAP* orochimaruataque[18]; //ataque do orochimaru
   orochimaruataque[0] = load_bitmap("final1.bmp", NULL);
   orochimaruataque[1] = load_bitmap("final2.bmp", NULL);
   orochimaruataque[2] = load_bitmap("final3.bmp", NULL);
@@ -140,10 +140,13 @@ int main()
   orochimaruataque[11] = load_bitmap("final12.bmp", NULL);
   orochimaruataque[12] = load_bitmap("final13.bmp", NULL);
   orochimaruataque[13] = load_bitmap("final14.bmp", NULL);
+  orochimaruataque[14] = load_bitmap("stop.bmp", NULL);
+  orochimaruataque[15] = load_bitmap("stop2.bmp", NULL);
+  orochimaruataque[16] = load_bitmap("stop3.bmp", NULL);
+  orochimaruataque[17] = load_bitmap("stop4.bmp", NULL);
 
 
 
-  //BITMAP* sky = load_bitmap("sky.bmp", NULL);
   BITMAP* cenario_h = load_bitmap("cenario_h.bmp", NULL);
   BITMAP* cenariop[8];
   for(int i =0; i<8;i++){cenariop[i] = load_bitmap("cenariop.bmp", NULL);}
@@ -171,10 +174,13 @@ int main()
   int frame_atual = 0;
   int tempo_troca = 90;
   double direcao;
-  int num_orochimaruataque = 14;
+  int num_orochimaruataque = 18;
   int frame_orochimaruataque = 0;
+
+  int num_queda=5;
+  int frame_queda = 0;
   int frame_vida = 10;
-  int cobra1 = 0;
+  int orochi = 0;
 
 
 
@@ -206,14 +212,14 @@ int main()
             direcao = DRAW_SPRITE_H_FLIP; //DIREÇÃO DO FRAME (SÓ FUNCIONA NO DRAW_SPRITE_EX)
 
 
-            eixo_x_personagem = eixo_x_personagem - vel_x; // FAZ O CENARIO ANDAR (QUE DA A IMPRESSÃO DO NARUTO ESTA SE MOVENDO)
+            eixo_x_personagem = eixo_x_personagem - vel_x; //naruto que anda
          }
          else if(key[KEY_D])
          {
              frame_atual = (milisegundos / tempo_troca) % num_frames; //MUDANÇA DE FRAME DO NARUTO
              direcao = DRAW_SPRITE_NO_FLIP; //DIREÇÃO DO FRAME (SÓ FUNCIONA NO DRAW_SPRITE_EX)
 
-            eixo_x_personagem = eixo_x_personagem + vel_x; // FAZ O CENARIO ANDAR (QUE DA A IMPRESSÃO DO NARUTO ESTA SE MOVENDO)
+            eixo_x_personagem = eixo_x_personagem + vel_x; //naruto que anda
          }
 
          else
@@ -241,8 +247,10 @@ int main()
 
         else{vel_y += gravidade; eixo_y += vel_y;} // FUNÇÃO DE GRAVIDADE
 
-    if(cobra1 != 14){frame_orochimaruataque = (milisegundos / 150) % num_orochimaruataque;
-        if(colidir(250, eixo_y, eixo_x+500, 140, 50, 80, 150, 150)) ////COLISÃO 1ª COBRA
+    if(orochi != 18){frame_orochimaruataque = (milisegundos / 150) % num_orochimaruataque;
+        if(eixo_x_personagem + 100 > eixo_x+500 && eixo_x_personagem < eixo_x_personagem+100)
+
+
         {
             if(eixo_x<=-709 && eixo_x>=-730){eixo_x = -709;} // BLOQUEIA A PASSAGEM PELA FRENTE DA COBRA
             else if(eixo_x>=-860 && eixo_x<=-740){eixo_x = -860;} // BLOQUEIA A PASSAGEM POR TRAS DA COBRA
@@ -250,23 +258,23 @@ int main()
             {
                 frame_atual = 10;
 
-                frame_orochimaruataque = 2;
-                cobra1 = 2;
+                frame_orochimaruataque =18;
+
+                orochi= 18;
 
             }
-
-            else if(timer - marcador >=2){frame_vida--; marcador = timer;} // SERVE PARA NÃO FICAR PERDENDO VIDA CONTINUAMENTE
+            else if(timer - marcador >=2){frame_vida= frame_vida - 2; marcador = timer;} // SERVE PARA NÃO FICAR PERDENDO VIDA CONTINUAMENTE
         }
-    }
 
+    }
 
 
          //CONDIÇÕES
 
 
-         if(eixo_x<-800)
+         if(eixo_x<-600)
          {
-             eixo_x = -800; // PONTO FINAL DO EIXO X
+             eixo_x = -600; // PONTO FINAL DO EIXO X
          }
          if(eixo_x>0)
          {
@@ -286,11 +294,11 @@ int main()
 
          //DRAW
 
-         //draw_sprite(buffer, sky, 0, 0);
+
          draw_sprite(buffer, cenario_h, 0, 0);
-         draw_sprite(buffer, cenariop[0], eixo_x, 10); //PRIMEIRO CENARIO
-         draw_sprite_ex(buffer, orochimaruataque[frame_orochimaruataque], eixo_x+500, 430, DRAW_SPRITE_NORMAL, DRAW_SPRITE_H_FLIP);//1ª COBRA
-         draw_sprite_ex(buffer, naruto[frame_atual], eixo_x_personagem, eixo_y, DRAW_SPRITE_NORMAL, direcao);//PERSONAGEM
+         draw_sprite(buffer, cenariop[0], eixo_x, 10);
+         draw_sprite_ex(buffer, orochimaruataque[frame_orochimaruataque], eixo_x+370, 430, DRAW_SPRITE_NORMAL, DRAW_SPRITE_H_FLIP); //orochiimaru
+         draw_sprite_ex(buffer, naruto[frame_atual], eixo_x_personagem, eixo_y, DRAW_SPRITE_NORMAL, direcao);//PERSONAGEM Naruto
          draw_sprite(buffer, vida[frame_vida], 30, 50);
          textout_ex(buffer, font, "Vida", 40, 40, makecol(255,255,255), -1);
          draw_sprite(screen, buffer, 0, 0);
@@ -304,7 +312,7 @@ int main()
   ///FINALIZAÇÃOs
   destroy_bitmap(buffer);
   destroy_bitmap(naruto);
-//  destroy_bitmap(sky);
+  //destroy_bitmap(queda);
   destroy_bitmap(cenario_h);
   destroy_bitmap(cenariop);
   destroy_bitmap(orochimaruataque);
@@ -315,10 +323,11 @@ int main()
 END_OF_MAIN();
 
 ///FUNÇÃO COLISÃO
-int colidir(int ax, int ay, int bx, int by, int aw, int ah, int bw, int bh){
-    if(ax+aw>bx && ax<bx+bw && ay+ah >by && ay<by+bh)return 1; // AX = EIXO X DO PERSONAGEM; AY = EIXO Y DO PERSONAGEM; BX = EIXO X DO OBJETO; BY = EIXO Y DO OBJETO; AW = LARGURA DO PERSONAGEM; AH = ALTURA DO PERSONAGEM; BW = LARGURA DO OBJETO; BH = ALTURA DO OBJETO
+ int colidir(int ax, int ay, int bx, int by, int aw, int ah, int bw, int bh){
+ if(ax+aw>bx && ax<bx+bw && ay+ah >by && ay<by+bh)return 1; // AX = EIXO X DO PERSONAGEM; AY = EIXO Y DO PERSONAGEM; BX = EIXO X DO OBJETO; BY = EIXO Y DO OBJETO; AW = LARGURA DO PERSONAGEM; AH = ALTURA DO PERSONAGEM; BW = LARGURA DO OBJETO; BH = ALTURA DO OBJETO
 
-    return 0;}
+    return 0;
+    }
 
 
 
